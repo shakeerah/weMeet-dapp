@@ -1,0 +1,24 @@
+{
+  "name": "wemeet",
+  "version": "1.0.0",
+  "description": "full-stack RSVP dapp. A web3-native event platfrom that allows any one organise events and track RSVPs and attendees,  Attendees will need to deposit ETH to rsvp and will get it back upon them checking in at the event",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "script": "npx hardhat compile && npx hardhat run scripts/run.ts",
+    "deploy": "npx hardhat compile && npx hardhat run scripts/deploy.js --network mumbai"
+  },
+  "keywords": [
+    "events",
+    "RSVP"
+  ],
+  "author": "Shakirah",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "hardhat": "^2.12.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3"
+  }
+}

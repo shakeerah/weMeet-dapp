@@ -1,0 +1,35 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+features:
+  - ipfsOnEthereumContracts
+dataSources:
+  - kind: ethereum
+    name: WeRsvp
+    network: mumbai
+    source:
+      address: "0xc47b2Ec686dE88F2A793d8ef6e7F2Ca86464EBe3"
+      abi: WeRsvp
+      startBlock: 29672490
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Event
+        - Account
+        - RSVP
+        - Confirmation
+      abis:
+        - name: WeRsvp
+          file: ./abis/WeRsvp.json
+      eventHandlers:
+        - event: AttendeeConfirmed(bytes32,address)
+          handler: handleAttendeeConfirmed
+        - event: NewEventCreated(bytes32,address,uint256,uint256,uint256,uint256,string)
+          handler: handleNewEventCreated
+        - event: NewRSVPcreated(bytes32,address)
+          handler: handleNewRSVPcreated
+        - event: UnclaimedDepositsWithdrawn(bytes32)
+          handler: handleUnclaimedDepositsWithdrawn
+      file: ./src/we-rsvp.ts
