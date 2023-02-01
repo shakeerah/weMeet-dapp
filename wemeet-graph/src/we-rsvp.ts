@@ -1,22 +1,16 @@
-import { Address, ipfs, json } from '@graphprotocol/graph-ts';
-
+import { Address, BigInt, ipfs, json, log } from "@graphprotocol/graph-ts"
+import { integer } from "@protofire/subgraph-toolkit";
 import {
-  AttendeeConfirmed as AttendeeConfirmedEvent,
-  NewEventCreated as NewEventCreatedEvent,
-  NewRSVPcreated as NewRSVPcreatedEvent,
-  UnclaimedDepositsWithdrawn as UnclaimedDepositsWithdrawnEvent,
-} from '../generated/WeRsvp/WeRsvp';
+  WeRsvp,
+  AttendeeConfirmed,
+  CapturedError,
+  NewEventCreated,
+  NewRSVPcreated,
+  UnclaimedDepositsWithdrawn
+} from "../generated/WeRsvp/WeRsvp"
+import { Event, Account, RSVP, Confirmation, Error } from "../generated/schema"
 
-import {
-  Account,
-  RSVP,
-  Confirmation,
-  Event,
-} from '../generated/schema';
-
-import { integer } from '@protofire/subgraph-toolkit';
-
-export function handleNewEventCreated(event: NewEventCreatedEvent): void {
+export function handleNewEventCreated(event: NewEventCreated): void {
   let newEvent = Event.load(event.params.eventId.toHex());
   if (newEvent == null) {
     newEvent = new Event(event.params.eventId.toHex());
@@ -31,6 +25,7 @@ export function handleNewEventCreated(event: NewEventCreatedEvent): void {
     newEvent.totalRSVPs = integer.ZERO;
 
     let metadata = ipfs.cat(event.params.eventDataCID + '/data.json');
+    if (!metadata) log.critical ("Unexpected! Metatdata notFound", [])
 
     if (metadata) {
       const value = json.fromBytes(metadata).toObject();
@@ -50,22 +45,18 @@ export function handleNewEventCreated(event: NewEventCreatedEvent): void {
           newEvent.link = link.toString();
         }
         if (imagePath) {
-          const ImageUrl =
-            'https://ipfs.io/ipfs' +
-            event.params.eventDataCID +
-            imagePath.toString();
+          const ImageUrl = 'https://ipfs.io/ipfs' + event.params.eventDataCID + imagePath.toString();
           newEvent.imageUrl = ImageUrl;
         } else {
-          const fallbackUrl =
-            'https://ipfs.io/ipfs/bafybeibssbrlptcefbqfh4vpw2wlmqfj2kgxt3nil4yujxbmdznau3t5wi/event.png';
+          const fallbackUrl = 'https://ipfs.io/ipfs/bafybeibssbrlptcefbqfh4vpw2wlmqfj2kgxt3nil4yujxbmdznau3t5wi/event.png';
           newEvent.imageUrl = fallbackUrl;
         }
       }
     }
 
+
     newEvent.save();
   }
-
 }
 
 function getOrCreateAccount(address: Address): Account {
@@ -80,9 +71,8 @@ function getOrCreateAccount(address: Address): Account {
   return account;
 }
 
-export function handleNewRSVPcreated(event: NewRSVPcreatedEvent): void {
-  let id =
-    event.params.eventId.toHex() + event.params.registrantAddress.toHex();
+export function handleNewRSVPcreated(event: NewRSVPcreated): void {
+  let id = event.params.eventId.toHex() + event.params.registrantAddress.toHex();
   let newRSVP = RSVP.load(id);
 
   let account = getOrCreateAccount(event.params.registrantAddress);
@@ -91,7 +81,7 @@ export function handleNewRSVPcreated(event: NewRSVPcreatedEvent): void {
   if (newRSVP == null && thisEvent != null) {
     newRSVP = new RSVP(id);
     newRSVP.event = thisEvent.id;
-    newRSVP.attendee = account.id;
+    newRSVP.registrant = account.id;
     newRSVP.save();
 
     thisEvent.totalRSVPs = integer.increment(thisEvent.totalRSVPs);
@@ -100,13 +90,12 @@ export function handleNewRSVPcreated(event: NewRSVPcreatedEvent): void {
     account.totalRSVPs = integer.increment(account.totalRSVPs);
     account.save();
   }
-
 }
 
-export function handleAttendeeConfirmed(event: AttendeeConfirmedEvent): void {
-  let id = event.params.eventId.toHex() + event.params.registrantAddress.toHex()
+export function handleAttendeeConfirmed(event: AttendeeConfirmed): void {
+  let id = event.params.eventId.toHex() + event.params.attendeeAddress.toHex()
   let newConfirmation = Confirmation.load(id)
-  let account = getOrCreateAccount(event.params.registrantAddress)
+  let account = getOrCreateAccount(event.params.attendeeAddress)
   let thisEvent = Event.load(event.params.eventId.toHex())
 
   if (newConfirmation == null && thisEvent != null) {
@@ -124,12 +113,22 @@ export function handleAttendeeConfirmed(event: AttendeeConfirmedEvent): void {
 }
 
 export function handleUnclaimedDepositsWithdrawn(
-  event: UnclaimedDepositsWithdrawnEvent
+  event: UnclaimedDepositsWithdrawn
 ): void {
+  let thisEvent = Event.load(event.params.eventId.toHex());
 
-  let thisEvent = Event.load(event.params.eventID.toHex())
   if (thisEvent) {
     thisEvent.refundPaidOut = true
     thisEvent.save()
   }
 }
+
+
+export function handleCapturedError(event: CapturedError): void {
+  let error = Error.load(event.params.errorCode.toHex())
+  // if (error) {
+  //   error.errorCode
+  //   error.save()
+  // }
+}
+

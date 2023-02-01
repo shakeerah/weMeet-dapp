@@ -6,24 +6,23 @@ const main = async () => {
     await WeRSVPContract.deployed();
     console.log('🚀 ~ WeRSVP Contract deployed to : ', WeRSVPContract.address)
 
-    const [deployer, user_1, user_2] = await hre.ethers.getSigners();
+    const [deployer, user_2, user_3] = await hre.ethers.getSigners();
     console.log('🚀 ~ file: run.ts:10 ~ main ~ deployer', deployer.address)
 
     let eventName = 'someEvent'
     let deposit = hre.ethers.utils.parseEther("1");
-    let maxCapacity = 5
+    let maxCapacity = 2
     let eventStartTimestamp = Date.parse('2023/01/02')
     let eventEndTimestamp = Date.parse('2023/01/03')
 
     let eventDataCID = `${eventStartTimestamp}_${eventName}_${eventEndTimestamp}`
 
-    let evtTrx = await WeRSVPContract.createNewEvent( eventStartTimestamp, eventEndTimestamp, deposit, maxCapacity, eventDataCID )
-        
-    let weMeetWait = await evtTrx.wait()
+    let createEvtTrx = await WeRSVPContract.createNewEvent( eventStartTimestamp, eventEndTimestamp, deposit, maxCapacity, eventDataCID )
+    let weMeetWait = await createEvtTrx.wait()
         console.log("NEW EVENT CREATED:", weMeetWait.events![0].event, weMeetWait.events![0].args);
         
     let eventId = weMeetWait.events![0].args!.eventId;
-        console.log("EVENT ID:", eventId);
+        console.log("CREATED EVENT ID:", eventId);
 
     let rsvpTrx_1 = await WeRSVPContract.createNewRsvp(eventId, {value: deposit})
     let weMeetRsvpWait = await rsvpTrx_1.wait()
@@ -31,14 +30,14 @@ const main = async () => {
     console.log('New RsvpWait Deployer', weMeetRsvpWait!.events![0].event, weMeetRsvpWait!.events![0].args)
 
     let rsvpTrx_2 = await WeRSVPContract
-    .connect(user_1).createNewRsvp(eventId, {value: deposit})
+    .connect(user_2).createNewRsvp(eventId, {value: deposit})
      weMeetRsvpWait = await rsvpTrx_2.wait()
-    console.log('New RsvpWait user_1', weMeetRsvpWait.events![0].event, weMeetRsvpWait.events![0].args)
+    console.log('New RsvpWait user_2', weMeetRsvpWait.events![0].event, weMeetRsvpWait.events![0].args)
 
     let rsvpTrx_3 = await WeRSVPContract
-    .connect(user_2).createNewRsvp(eventId, {value: deposit})
+    .connect(user_3).createNewRsvp(eventId, {value: deposit})
      weMeetRsvpWait = await rsvpTrx_3.wait()
-    console.log('New RsvpWait user_2', weMeetRsvpWait.events![0].event, weMeetRsvpWait.events![0].args)
+    console.log('New RsvpWait user_3', weMeetRsvpWait.events![0].event, weMeetRsvpWait.events![0].args)
 
     let cfmTrx =  await WeRSVPContract.confirmAllAttendees(eventId) 
     let weMeetCfmWait = await cfmTrx.wait()

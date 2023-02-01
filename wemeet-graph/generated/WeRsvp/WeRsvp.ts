@@ -7,8 +7,8 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt,
-} from '@graphprotocol/graph-ts';
+  BigInt
+} from "@graphprotocol/graph-ts";
 
 export class AttendeeConfirmed extends ethereum.Event {
   get params(): AttendeeConfirmed__Params {
@@ -27,8 +27,34 @@ export class AttendeeConfirmed__Params {
     return this._event.parameters[0].value.toBytes();
   }
 
-  get registrantAddress(): Address {
+  get attendeeAddress(): Address {
     return this._event.parameters[1].value.toAddress();
+  }
+}
+
+export class CapturedError extends ethereum.Event {
+  get params(): CapturedError__Params {
+    return new CapturedError__Params(this);
+  }
+}
+
+export class CapturedError__Params {
+  _event: CapturedError;
+
+  constructor(event: CapturedError) {
+    this._event = event;
+  }
+
+  get errorCode(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get errorContext(): string {
+    return this._event.parameters[1].value.toString();
+  }
+
+  get errorMessage(): string {
+    return this._event.parameters[2].value.toString();
   }
 }
 
@@ -109,7 +135,7 @@ export class UnclaimedDepositsWithdrawn__Params {
     this._event = event;
   }
 
-  get eventID(): Bytes {
+  get eventId(): Bytes {
     return this._event.parameters[0].value.toBytes();
   }
 }
@@ -146,14 +172,14 @@ export class WeRsvp__eventsMapResult {
 
   toMap(): TypedMap<string, ethereum.Value> {
     let map = new TypedMap<string, ethereum.Value>();
-    map.set('value0', ethereum.Value.fromFixedBytes(this.value0));
-    map.set('value1', ethereum.Value.fromString(this.value1));
-    map.set('value2', ethereum.Value.fromAddress(this.value2));
-    map.set('value3', ethereum.Value.fromUnsignedBigInt(this.value3));
-    map.set('value4', ethereum.Value.fromUnsignedBigInt(this.value4));
-    map.set('value5', ethereum.Value.fromUnsignedBigInt(this.value5));
-    map.set('value6', ethereum.Value.fromUnsignedBigInt(this.value6));
-    map.set('value7', ethereum.Value.fromBoolean(this.value7));
+    map.set("value0", ethereum.Value.fromFixedBytes(this.value0));
+    map.set("value1", ethereum.Value.fromString(this.value1));
+    map.set("value2", ethereum.Value.fromAddress(this.value2));
+    map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
+    map.set("value4", ethereum.Value.fromUnsignedBigInt(this.value4));
+    map.set("value5", ethereum.Value.fromUnsignedBigInt(this.value5));
+    map.set("value6", ethereum.Value.fromUnsignedBigInt(this.value6));
+    map.set("value7", ethereum.Value.fromBoolean(this.value7));
     return map;
   }
 
@@ -192,13 +218,13 @@ export class WeRsvp__eventsMapResult {
 
 export class WeRsvp extends ethereum.SmartContract {
   static bind(address: Address): WeRsvp {
-    return new WeRsvp('WeRsvp', address);
+    return new WeRsvp("WeRsvp", address);
   }
 
   eventsMap(param0: Bytes): WeRsvp__eventsMapResult {
     let result = super.call(
-      'eventsMap',
-      'eventsMap(bytes32):(bytes32,string,address,uint256,uint256,uint256,uint256,bool)',
+      "eventsMap",
+      "eventsMap(bytes32):(bytes32,string,address,uint256,uint256,uint256,uint256,bool)",
       [ethereum.Value.fromFixedBytes(param0)]
     );
 
@@ -216,8 +242,8 @@ export class WeRsvp extends ethereum.SmartContract {
 
   try_eventsMap(param0: Bytes): ethereum.CallResult<WeRsvp__eventsMapResult> {
     let result = super.tryCall(
-      'eventsMap',
-      'eventsMap(bytes32):(bytes32,string,address,uint256,uint256,uint256,uint256,bool)',
+      "eventsMap",
+      "eventsMap(bytes32):(bytes32,string,address,uint256,uint256,uint256,uint256,bool)",
       [ethereum.Value.fromFixedBytes(param0)]
     );
     if (result.reverted) {

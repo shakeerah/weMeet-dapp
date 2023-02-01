@@ -24,13 +24,13 @@ type Account @entity {
   id: ID!
   totalRSVPs: BigInt!
   totalAttendedEvent: BigInt!
-  rsvps: [RSVP!] @derivedFrom(field: "attendee")
+  rsvps: [RSVP!] @derivedFrom(field: "registrant")
   attendedEvents: [Confirmation!] @derivedFrom(field: "attendee")
 }
 
 type RSVP @entity {
   id: ID!
-  attendee: Account!
+  registrant: Account!
   event: Event!
 }
 
@@ -38,4 +38,11 @@ type Confirmation @entity {
   id: ID!
   attendee: Account!
   event: Event!
+}
+
+type Error @entity {
+  id: ID!
+  errorCode: BigInt
+  errorContext: String
+  event: String
 }

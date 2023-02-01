@@ -1,44 +1,4 @@
-# // required field has a “!” (the value can’t be null) .
 
-# type AttendeeConfirmed @entity(immutable: true) {
-#   id: Bytes!
-#   eventId: Bytes! # bytes32
-#   registrantAddress: Bytes! # address
-#   blockNumber: BigInt!
-#   blockTimestamp: BigInt!
-#   transactionHash: Bytes!
-# }
-
-# type NewEventCreated @entity(immutable: true) {
-#   id: Bytes!
-#   eventId: Bytes! # bytes32
-#   creatorAddress: Bytes! # address
-#   eventStartTimestamp: BigInt! # uint256
-#   eventEndTimestamp: BigInt! # uint256
-#   maxCapacity: BigInt! # uint256
-#   deposit: BigInt! # uint256
-#   eventDataCID: String! # string
-#   blockNumber: BigInt!
-#   blockTimestamp: BigInt!
-#   transactionHash: Bytes!
-# }
-
-# type NewRSVPcreated @entity(immutable: true) {
-#   id: Bytes!
-#   eventId: Bytes! # bytes32
-#   registrantAddress: Bytes! # address
-#   blockNumber: BigInt!
-#   blockTimestamp: BigInt!
-#   transactionHash: Bytes!
-# }
-
-# type UnclaimedDepositsWithdrawn @entity(immutable: true) {
-#   id: Bytes!
-#   eventID: Bytes! # bytes32
-#   blockNumber: BigInt!
-#   blockTimestamp: BigInt!
-#   transactionHash: Bytes!
-# }
 
 type Event @entity {
   id: ID!
@@ -64,13 +24,13 @@ type Account @entity {
   id: ID!
   totalRSVPs: BigInt!
   totalAttendedEvent: BigInt!
-  rsvps: [RSVP!] @derivedFrom(field: "attendee")
+  rsvps: [RSVP!] @derivedFrom(field: "registrant")
   attendedEvents: [Confirmation!] @derivedFrom(field: "attendee")
 }
 
 type RSVP @entity {
   id: ID!
-  attendee: Account!
+  registrant: Account!
   event: Event!
 }
 
@@ -78,4 +38,11 @@ type Confirmation @entity {
   id: ID!
   attendee: Account!
   event: Event!
+}
+
+type Error @entity {
+  id: ID!
+  errorCode: BigInt
+  errorContext: String
+  event: String
 }

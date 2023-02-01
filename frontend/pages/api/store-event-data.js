@@ -14,11 +14,17 @@ async function storeEventData(req, res){
     try{
         const files = await makeFileObjects(body)
         const cid = await storeFiles(files)
-        return res.status(200).json({success: true, cid})
+        return res.status(200).json({success: true, cid, files, body})
     }catch(error){
         console.log('🚀 ~ file: store-event-data.js:17 ~ storeEventData ~ error', error)
         return res.status(500).json({ message: "error creating event", success: false})
     }
+}
+
+async function storeFiles(files){
+    const client =  makeStorageClient()
+    const cid = await client.put(files)
+    return cid
 }
 
 async function makeFileObjects(body){
@@ -34,10 +40,4 @@ async function makeFileObjects(body){
 
 function makeStorageClient(){
     return new Web3Storage({ token: process.env.WEB3_STORAGE_TOKEN})
-}
-
-async function storeFiles(files){
-    const client =  makeStorageClient()
-    const cid = await client.put(files)
-    return cid
 }

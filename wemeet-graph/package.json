@@ -3,7 +3,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
-    "build": "graph build",
+    "build": "graph codegen && graph build",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ shakeerah/wemeet-graph",
     "create-local": "graph create --node http://localhost:8020/ shakeerah/wemeet-graph",
     "remove-local": "graph remove --node http://localhost:8020/ shakeerah/wemeet-graph",
@@ -16,6 +16,6 @@
     "@protofire/subgraph-toolkit": "^0.1.2"
   },
   "devDependencies": {
-    "matchstick-as": "0.5.0"
+    "matchstick-as": "^0.5.0"
   }
 }

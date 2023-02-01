@@ -11,11 +11,36 @@
       {
         "indexed": false,
         "internalType": "address",
-        "name": "registrantAddress",
+        "name": "attendeeAddress",
         "type": "address"
       }
     ],
     "name": "AttendeeConfirmed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "errorCode",
+        "type": "uint128"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "errorContext",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "errorMessage",
+        "type": "string"
+      }
+    ],
+    "name": "CapturedError",
     "type": "event"
   },
   {
@@ -92,7 +117,7 @@
       {
         "indexed": false,
         "internalType": "bytes32",
-        "name": "eventID",
+        "name": "eventId",
         "type": "bytes32"
       }
     ],

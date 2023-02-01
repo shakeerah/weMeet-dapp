@@ -1,16 +1,18 @@
 specVersion: 0.0.5
-schema:
-  file: ./schema.graphql
+description: Event Management DApp
 features:
   - ipfsOnEthereumContracts
+  - nonFatalErrors
+schema:
+  file: ./schema.graphql
 dataSources:
   - kind: ethereum
     name: WeRsvp
     network: mumbai
     source:
-      address: "0xc47b2Ec686dE88F2A793d8ef6e7F2Ca86464EBe3"
+      address: "0xFD00aacB7bD4a31b43A98FBD75A107BAD4bf5669"
       abi: WeRsvp
-      startBlock: 29672490
+      startBlock: 30233218
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -20,16 +22,24 @@ dataSources:
         - Account
         - RSVP
         - Confirmation
+        - Error
       abis:
         - name: WeRsvp
           file: ./abis/WeRsvp.json
       eventHandlers:
         - event: AttendeeConfirmed(bytes32,address)
           handler: handleAttendeeConfirmed
+          receipt: true
+        - event: CapturedError(uint128,string,string)
+          handler: handleCapturedError
+          receipt: true
         - event: NewEventCreated(bytes32,address,uint256,uint256,uint256,uint256,string)
           handler: handleNewEventCreated
+          receipt: true
         - event: NewRSVPcreated(bytes32,address)
           handler: handleNewRSVPcreated
+          receipt: true
         - event: UnclaimedDepositsWithdrawn(bytes32)
           handler: handleUnclaimedDepositsWithdrawn
+          receipt: true
       file: ./src/we-rsvp.ts

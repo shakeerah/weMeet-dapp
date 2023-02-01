@@ -349,13 +349,13 @@ export class RSVP extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get attendee(): string {
-    let value = this.get("attendee");
+  get registrant(): string {
+    let value = this.get("registrant");
     return value!.toString();
   }
 
-  set attendee(value: string) {
-    this.set("attendee", Value.fromString(value));
+  set registrant(value: string) {
+    this.set("registrant", Value.fromString(value));
   }
 
   get event(): string {
@@ -415,5 +415,88 @@ export class Confirmation extends Entity {
 
   set event(value: string) {
     this.set("event", Value.fromString(value));
+  }
+}
+
+export class Error extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Error entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Error must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Error", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Error | null {
+    return changetype<Error | null>(store.get("Error", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get errorCode(): BigInt | null {
+    let value = this.get("errorCode");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set errorCode(value: BigInt | null) {
+    if (!value) {
+      this.unset("errorCode");
+    } else {
+      this.set("errorCode", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get errorContext(): string | null {
+    let value = this.get("errorContext");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set errorContext(value: string | null) {
+    if (!value) {
+      this.unset("errorContext");
+    } else {
+      this.set("errorContext", Value.fromString(<string>value));
+    }
+  }
+
+  get event(): string | null {
+    let value = this.get("event");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set event(value: string | null) {
+    if (!value) {
+      this.unset("event");
+    } else {
+      this.set("event", Value.fromString(<string>value));
+    }
   }
 }
