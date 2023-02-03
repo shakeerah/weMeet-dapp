@@ -4,7 +4,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import connectContract from "../../utils/connectContract";
 import Alert from "../../components/Alert";
-import Loader from '../../components/Loader';
+import Loader from "../../components/Loader";
 
 import Head from "next/head";
 import { gql } from "@apollo/client";
@@ -60,7 +60,10 @@ function Event({ event }) {
         setMessage("Error getting Contract");
       }
     } catch (error) {
-      console.log(  "🚀 ~ file: Event details by Id line:64 ~ newRSVP ~ error",  error);
+      console.log(
+        "🚀 ~ file: Event details by Id line:64 ~ newRSVP ~ error",
+        error
+      );
       setSuccess(false);
       setLoading(false);
       setMessage("Failed to register your RSVP.");
@@ -77,17 +80,15 @@ function Event({ event }) {
       {event && (
         <section className="relative py-12">
           {loading && (
-              <Alert
-                alertType={"loading"}
-                alertBody={"Please Wait"}
-                triggerAlert={true}
-                color={"white"}
-              />
+            <Alert
+              alertType={"loading"}
+              alertBody={"Please Wait"}
+              triggerAlert={true}
+              color={"white"}
+            />
           )}
 
-          {loading && (
-            <Loader />
-          )}
+          {loading && <Loader />}
 
           {success && (
             <Alert
@@ -120,7 +121,7 @@ function Event({ event }) {
           </h1>
           <div className="flex flex-wrap-reverse lg:flex-nowrap">
             <div className="w-full pr-0 lg:pr-24 xl:pr-32">
-              <div className="mb-8 w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
+              <div className="mb-8 w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-200 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-200 focus-within:ring-indigo-500 overflow-hidden">
                 {event.imageUrl && (
                   <Image
                     src="{event.imageUrl}"

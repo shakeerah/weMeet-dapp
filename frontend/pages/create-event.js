@@ -7,7 +7,7 @@ import connectContract from "../utils/connectContract";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import Alert from "../components/Alert";
-import Loader from '../../components/Loader';
+import Loader from '../components/Loader';
 
 export default function CreateEvent() {
   const { data: account } = useAccount();

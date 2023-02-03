@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import EventCard from "../components/EventCard";
-import Loader from '../../components/Loader';
+import Loader from '../components/Loader';
 
 import Landing from "../components/Landing";
 

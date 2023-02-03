@@ -1,3 +1,4 @@
+import {useState} from 'react'
 import Layout from "../components/Layout";
 import "../styles/globals.css";
 
@@ -26,11 +27,17 @@ const wagmiClient = createClient({
 
 
 export default function MyApp({ Component, pageProps }) {
+  const [darkToggle, setDarkToggle] = useState(false)
+
+  function handleThemeToggle(){
+    setDarkToggle(!darkToggle)
+  }
+
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains}>
         <ApolloProvider client={ApolloClient}>
-          <Layout>
+          <Layout theme={darkToggle} handleThemeToggle={handleThemeToggle}>
             <Component {...pageProps} />
           </Layout>
         </ApolloProvider>
